@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 import { ENV } from '../../utils/env.js';
 
-const { regression, P1 } = testdata.tags;
+const { regression, P1 } = tags;
 
 test.describe("Error Banner", () => {
 

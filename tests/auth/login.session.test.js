@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { InventoryPage } from '../../pages/inventory.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 import { ENV } from '../../utils/env.js';
 
-const { smoke, regression, P1 } = testdata.tags;
+const { smoke, regression, P1 } = tags;
 
 test.describe("Session", () => {
     test.describe.configure({ mode: 'serial' });

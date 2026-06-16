@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 
-const { regression, P1, P2, P3 } = testdata.tags;
+const { regression, P1, P2, P3 } = tags;
 
 test.describe("Invalid Login", () => {
     test.describe.configure({ mode: 'parallel' });

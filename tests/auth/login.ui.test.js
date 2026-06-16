@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 
-const { regression, P2 } = testdata.tags;
+const { regression, P2 } = tags;
 
 test.describe("Login UI", () => {
 

@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { InventoryPage } from '../../pages/inventory.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 import { ENV } from '../../utils/env.js';
 
-const { smoke, regression, P1, P2, P3 } = testdata.tags;
+const { smoke, regression, P1, P2, P3 } = tags;
 
 test.describe("Valid Login", () => {
     test.describe.configure({ mode: 'parallel' });

@@ -2,14 +2,6 @@
     "expected_texts": {
         "swag_labs_title": "Swag Labs"
     },
-    "tags": {
-        "smoke": "@smoke",
-        "regression": "@regression",
-        "login": "@login",
-        "P1": "@P1",
-        "P2": "@P2",
-        "P3": "@P3"
-    },
     "invalid_users": {
         "TC_AUTH_02": {
             "user": "",
