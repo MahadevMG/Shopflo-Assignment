@@ -1,0 +1,4 @@
+title: Shopflo E2E Test Framework
+description: Playwright-based end-to-end test automation framework built for Swag Labs — covering architecture decisions, implementation details, and future plans.
+theme: cayman
+show_downloads: false

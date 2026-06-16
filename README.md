@@ -221,6 +221,7 @@ To view: `GitHub → Actions → latest workflow run → Artifacts → playwrigh
 | Document | What it covers |
 |---|---|
 | [Framework.md](./Framework.md) | Architecture, POM, locator strategy, parallelism, session handling, CI config, how to add new tests |
+| [DECISIONS.md](./DECISIONS.md) | Framework choice rationale, Selenium vs WebdriverIO vs Playwright comparison, extension plan, future roadmap |
 
 ---
 
