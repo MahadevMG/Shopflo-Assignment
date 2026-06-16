@@ -25,20 +25,38 @@ jobs:
         with:
           node-version: lts/*
 
-      # Step 3 — Install npm dependencies
-      # `npm ci` is used instead of `npm install` because:
-      #   - it installs exact versions from package-lock.json (reproducible builds)
-      #   - it fails if package-lock.json is out of sync with package.json
-      #   - it's faster on CI since it skips the resolution step
+      # Step 3 — Cache node_modules
+      # Cache key is a hash of package-lock.json — any dependency change
+      # produces a different hash, invalidating the cache and triggering a fresh install
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-${{ hashFiles('package-lock.json') }}
+
+      # Step 4 — Install npm dependencies (only on cache miss)
+      # Skipped entirely if node_modules cache is still valid
       - name: Install dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      # Step 4 — Download Playwright browsers (Chromium, Firefox, WebKit)
+      # Step 5 — Cache Playwright browsers
+      # Same cache key strategy — invalidated only when package-lock.json changes
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      # Step 6 — Install Playwright browsers (only on cache miss)
       # --with-deps also installs OS-level dependencies required by the browsers
       - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      # Step 5 — Run all Playwright tests
+      # Step 7 — Run all Playwright tests
       # Secrets are stored in GitHub → Settings → Secrets and Variables → Actions
       # They are injected here as environment variables — same names as .env locally
       # dotenv in playwright.config.js reads process.env, so this works transparently
