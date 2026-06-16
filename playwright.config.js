@@ -21,8 +21,8 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /* Limit workers to control memory: 2 on CI, 4 locally */
   workers: process.env.CI ? 2 : 4,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* CI: github (inline PR annotations) + html — Local: html only */
+  reporter: process.env.CI ? [['github'], ['html']] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
