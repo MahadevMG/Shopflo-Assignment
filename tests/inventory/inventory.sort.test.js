@@ -8,7 +8,7 @@ const { regression, P2 } = tags;
 const AUTH = (/** @type {string} */ user) => `playwright/.auth/${user}.json`;
 
 /**standard_user */
-test.describe('standard_user — sort', () => {
+test.describe('standard_user - sort', () => {
     test.use({ storageState: AUTH(ENV.standard_user) });
 
     let inventoryPage;
@@ -71,8 +71,8 @@ test.describe('standard_user — sort', () => {
     });
 });
 
-/** visual_user — price sort shows wrong prices (known bug) */
-test.describe('visual_user — sort (known price display bug)', () => {
+/** visual_user - price sort shows wrong prices (known bug) */
+test.describe('visual_user - sort (known price display bug)', () => {
     test.use({ storageState: AUTH(ENV.visual_user) });
 
     let inventoryPage;
@@ -81,22 +81,22 @@ test.describe('visual_user — sort (known price display bug)', () => {
         await inventoryPage.goto();
     });
 
-    test('[TC_INV_12] sort Price low to high — displayed prices are all wrong', { tag: [P2, regression] }, async () => {
+    test('[TC_INV_12] sort Price low to high - displayed prices are all wrong', { tag: [P2, regression] }, async () => {
         // Bug: sort may reorder items but all prices shown are inflated/incorrect for visual_user
         await inventoryPage.sortBy(testdata.sort.price_low_high.value);
         const firstPrice = await inventoryPage.itemPrices.first().textContent();
         expect(firstPrice).toBe(testdata.sort.price_low_high.first_price);
     });
 
-    test('[TC_INV_14] sort Price high to low — displayed prices are all wrong', { tag: [P2, regression] }, async () => {
+    test('[TC_INV_14] sort Price high to low - displayed prices are all wrong', { tag: [P2, regression] }, async () => {
         // Bug: Fleece Jacket shows $90.71 instead of $49.99 for visual_user
         await inventoryPage.sortBy(testdata.sort.price_high_low.value);
         const firstPrice = await inventoryPage.itemPrices.first().textContent();
         expect(firstPrice).toBe(testdata.sort.price_high_low.first_price);
     });
 
-    test('[TC_INV_55] sort order cannot be visually verified — all displayed prices are wrong', { tag: [P2, regression] }, async () => {
-        // Bug: even if backend sort is correct, user sees wrong prices — cannot trust the display
+    test('[TC_INV_55] sort order cannot be visually verified - all displayed prices are wrong', { tag: [P2, regression] }, async () => {
+        // Bug: even if backend sort is correct, user sees wrong prices - cannot trust the display
         await inventoryPage.sortBy(testdata.sort.price_low_high.value);
         const prices = await inventoryPage.getAllProductPrices();
         const standardPrices = testdata.products.map(p => p.price);

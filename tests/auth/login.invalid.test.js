@@ -60,7 +60,7 @@ test.describe("Invalid Login", () => {
         await expect(loginPage.errorMessage).toHaveText(tc.expected_error);
     });
 
-    // KNOWN FAILURES — spec defines error messages with emoji prefix ("😢 ...") but the app
+    // KNOWN FAILURES - spec defines error messages with emoji prefix ("😢 ...") but the app
     // renders "Epic sadface: ..." instead. These tests document the discrepancy.
     // Remove test.fail() and update the assertion string when spec and app align.
 

@@ -8,7 +8,7 @@ const { regression, P1 } = tags;
 const AUTH = (/** @type {string} */ user) => `playwright/.auth/${user}.json`;
 
 /**  standard_user */
-test.describe('standard_user — product display', () => {
+test.describe('standard_user - product display', () => {
     test.use({ storageState: AUTH(ENV.standard_user) });
 
     
@@ -53,7 +53,7 @@ test.describe('standard_user — product display', () => {
 });
 
 /** problem_user */
-test.describe('problem_user — product display (known image bug)', () => {
+test.describe('problem_user - product display (known image bug)', () => {
     test.use({ storageState: AUTH(ENV.problem_user) });
 
     let inventoryPage;
@@ -63,7 +63,7 @@ test.describe('problem_user — product display (known image bug)', () => {
     });
 
     test('[TC_INV_02] all 6 products load but every image is the same wrong dog photo', { tag: [P1, regression] }, async () => {
-        // Bug: all product images replaced with the same dog photo — asset URL mapping broken for problem_user
+        // Bug: all product images replaced with the same dog photo - asset URL mapping broken for problem_user
         await expect(inventoryPage.inventoryItems).toHaveCount(6);
 
         const images = await inventoryPage.itemImages.all();
@@ -73,7 +73,7 @@ test.describe('problem_user — product display (known image bug)', () => {
     });
 
     test('[TC_INV_41] none of the 6 product images match their actual product', { tag: [P1, regression] }, async () => {
-        // Bug: no product-specific image loads — all show the same dog photo
+        // Bug: no product-specific image loads - all show the same dog photo
         const images = await inventoryPage.itemImages.all();
         for (const img of images) {
             const src = await img.getAttribute('src');
@@ -83,7 +83,7 @@ test.describe('problem_user — product display (known image bug)', () => {
 });
 
 /**  visual_user */
-test.describe('visual_user — product display (known price and image bugs)', () => {
+test.describe('visual_user - product display (known price and image bugs)', () => {
     test.use({ storageState: AUTH(ENV.visual_user) });
 
     let inventoryPage;
@@ -93,7 +93,7 @@ test.describe('visual_user — product display (known price and image bugs)', ()
     });
 
     test('[TC_INV_03] all 6 products load but prices are inflated and wrong', { tag: [P1, regression] }, async () => {
-        // Bug: all prices are wrong for visual_user — none match standard_user prices
+        // Bug: all prices are wrong for visual_user - none match standard_user prices
         await expect(inventoryPage.inventoryItems).toHaveCount(6);
 
         const prices = await inventoryPage.getAllProductPrices();
@@ -111,7 +111,7 @@ test.describe('visual_user — product display (known price and image bugs)', ()
 });
 
 /** performance_glitch_user */
-test.describe('performance_glitch_user — product display (5s load delay)', () => {
+test.describe('performance_glitch_user - product display (5s load delay)', () => {
     test.use({ storageState: AUTH(ENV.performance_glitch_user) });
 
     test('[TC_INV_04] inventory loads correctly but takes ~5 seconds', { tag: [P1, regression] }, async ({ page }) => {
@@ -126,11 +126,11 @@ test.describe('performance_glitch_user — product display (5s load delay)', () 
 });
 
 /**  error_user */
-test.describe('error_user — product display (page looks correct on load)', () => {
+test.describe('error_user - product display (page looks correct on load)', () => {
     test.use({ storageState: AUTH(ENV.error_user) });
 
     test('[TC_INV_05] all 6 products load with correct images and prices', { tag: [P1, regression] }, async ({ page }) => {
-        // Errors only surface on interaction (Add to cart) — page looks identical to standard_user on load
+        // Errors only surface on interaction (Add to cart) - page looks identical to standard_user on load
         const inventoryPage = new InventoryPage(page);
         await inventoryPage.goto();
 

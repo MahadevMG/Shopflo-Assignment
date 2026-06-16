@@ -10,7 +10,7 @@ const { backpack } = testdata.test_products;
 const AUTH = (/** @type {string} */ user) => `playwright/.auth/${user}.json`;
 
 /** standard_user */
-test.describe('standard_user — product links', () => {
+test.describe('standard_user - product links', () => {
     test.use({ storageState: AUTH(ENV.standard_user) });
 
     let inventoryPage;
@@ -32,7 +32,7 @@ test.describe('standard_user — product links', () => {
         await expect(page).toHaveURL(testdata.navigation.backpack_detail_url);
     });
 
-    test('[TC_INV_51] no broken links — all product names navigate to real pages', { tag: [P2, regression] }, async ({ page }) => {
+    test('[TC_INV_51] no broken links - all product names navigate to real pages', { tag: [P2, regression] }, async ({ page }) => {
         const names = await inventoryPage.itemNames.allTextContents();
         for (const name of names) {
             await inventoryPage.goto();
@@ -43,8 +43,8 @@ test.describe('standard_user — product links', () => {
     });
 });
 
-/** problem_user — image links may go to wrong detail page (known bug) */
-test.describe('problem_user — product links (known image link bug)', () => {
+/** problem_user - image links may go to wrong detail page (known bug) */
+test.describe('problem_user - product links (known image link bug)', () => {
     test.use({ storageState: AUTH(ENV.problem_user) });
 
     let inventoryPage;
@@ -59,7 +59,7 @@ test.describe('problem_user — product links (known image link bug)', () => {
     });
 
     test('[TC_INV_25] clicking product image may navigate to wrong detail page', { tag: [P2, regression] }, async ({ page }) => {
-        // Bug: image links are mismatched for problem_user — dog image on Backpack card may go to wrong product
+        // Bug: image links are mismatched for problem_user - dog image on Backpack card may go to wrong product
         await inventoryPage.inventoryItems
             .filter({ hasText: backpack })
             .locator(inventoryPage.itemImages)
@@ -68,7 +68,7 @@ test.describe('problem_user — product links (known image link bug)', () => {
     });
 
     test('[TC_INV_52] each product image navigates to its own correct detail page', { tag: [P2, regression] }, async ({ page }) => {
-        // Bug: image links are mismatched — verify each image goes to the right product URL
+        // Bug: image links are mismatched - verify each image goes to the right product URL
         for (const product of testdata.products) {
             await inventoryPage.goto();
             await inventoryPage.inventoryItems
@@ -80,8 +80,8 @@ test.describe('problem_user — product links (known image link bug)', () => {
     });
 });
 
-/** No session — direct URL access blocked */
-test.describe('unauthenticated — direct URL access is blocked', () => {
+/** No session - direct URL access blocked */
+test.describe('unauthenticated - direct URL access is blocked', () => {
     test('[TC_INV_53] accessing /inventory.html without login redirects to login page', { tag: [P1, regression] }, async ({ page }) => {
         const loginPage = new LoginPage(page);
         await page.goto(testdata.navigation.inventory_url);
