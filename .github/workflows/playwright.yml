@@ -39,10 +39,19 @@ jobs:
         run: npx playwright install --with-deps
 
       # Step 5 — Run all Playwright tests
-      # Environment variables (STANDARD_USER, PASSWORD etc.) are injected from
-      # GitHub repository secrets — Settings → Secrets and Variables → Actions
+      # Secrets are stored in GitHub → Settings → Secrets and Variables → Actions
+      # They are injected here as environment variables — same names as .env locally
+      # dotenv in playwright.config.js reads process.env, so this works transparently
       - name: Run Playwright tests
         run: npx playwright test
+        env:
+          STANDARD_USER: ${{ secrets.STANDARD_USER }}
+          LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
+          PROBLEM_USER: ${{ secrets.PROBLEM_USER }}
+          PERFORMANCE_GLITCH_USER: ${{ secrets.PERFORMANCE_GLITCH_USER }}
+          ERROR_USER: ${{ secrets.ERROR_USER }}
+          VISUAL_USER: ${{ secrets.VISUAL_USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
 
       # Step 6 — Upload the HTML report as a downloadable artifact
       # `if: !cancelled()` ensures the report uploads even when tests fail,
