@@ -7,6 +7,7 @@ on:
     branches: [ main, master ]   # runs on every push to main/master
   pull_request:
     branches: [ main, master ]   # runs on every PR targeting main/master
+  workflow_dispatch:             # enables manual "Run workflow" button in GitHub Actions UI
 
 jobs:
   test:
