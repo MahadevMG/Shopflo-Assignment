@@ -15,6 +15,10 @@ permissions:
   pages: write       # allows deploying to GitHub Pages
   id-token: write    # required for OIDC token used by actions/deploy-pages
 
+# Use Node.js 24 for all actions to avoid deprecation warnings
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     # Cancel the job if it runs longer than 60 minutes (prevents hung runners)
@@ -79,8 +83,8 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
 
       # Step 8 — Copy Playwright HTML report into docs/report/
-      # Runs even if tests fail so the report is always available on Pages
-      # Report lives at: https://mahadevmg.github.io/Shopflo-Assignment/report/
+      # Runs even if tests fail so the report is always published to Pages
+      # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
       - name: Copy Playwright report into docs
         if: ${{ !cancelled() }}
         run: |
@@ -92,18 +96,19 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/configure-pages@v4
 
-      # Step 10 — Upload docs/ (site + report) as a Pages artifact
-      # This bundles the Jekyll docs site and the Playwright report together
+      # Step 10 — Upload docs/ (site + report) as a single Pages artifact
+      # Bundles the Jekyll docs site and the Playwright report together
       - name: Upload Pages artifact
         if: ${{ !cancelled() }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
 
-  # Separate deploy job — Pages requires its own job with specific permissions
+  # Deploy job — Pages deployment only runs on master push, not PRs
+  # PRs cannot deploy to Pages due to GitHub environment protection rules
   deploy:
     needs: test
-    if: ${{ !cancelled() }}
+    if: github.event_name != 'pull_request' && !cancelled()
     runs-on: ubuntu-latest
     environment:
       name: github-pages
