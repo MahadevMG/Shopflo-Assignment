@@ -85,24 +85,34 @@ jobs:
       # Step 8 — Copy Playwright HTML report into docs/report/
       # Runs even if tests fail so the report is always published to Pages
       # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
-      - name: Copy Playwright report into docs
-        if: ${{ !cancelled() }}
-        run: |
-          mkdir -p docs/report
-          cp -r playwright-report/. docs/report/
-
-      # Step 9 — Configure GitHub Pages
+      # Step 8 — Configure GitHub Pages
       - name: Setup Pages
         if: ${{ !cancelled() }}
         uses: actions/configure-pages@v4
 
-      # Step 10 — Upload docs/ (site + report) as a single Pages artifact
-      # Bundles the Jekyll docs site and the Playwright report together
+      # Step 9 — Build Jekyll site from docs/ into _site/
+      # Renders index.md into HTML with the Cayman theme
+      - name: Build Jekyll site
+        if: ${{ !cancelled() }}
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      # Step 10 — Copy Playwright report into the built Jekyll site
+      # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
+      - name: Copy Playwright report into site
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p _site/report
+          cp -r playwright-report/. _site/report/
+
+      # Step 11 — Upload built site + report as a single Pages artifact
       - name: Upload Pages artifact
         if: ${{ !cancelled() }}
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/
+          path: _site/
 
   # Deploy job — Pages deployment only runs on master push, not PRs
   # PRs cannot deploy to Pages due to GitHub environment protection rules
