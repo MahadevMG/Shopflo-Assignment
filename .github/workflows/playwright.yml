@@ -9,6 +9,12 @@ on:
     branches: [ main, master ]   # runs on every PR targeting main/master
   workflow_dispatch:             # enables manual "Run workflow" button in GitHub Actions UI
 
+# Permissions required for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write       # allows deploying to GitHub Pages
+  id-token: write    # required for OIDC token used by actions/deploy-pages
+
 jobs:
   test:
     # Cancel the job if it runs longer than 60 minutes (prevents hung runners)
@@ -72,13 +78,38 @@ jobs:
           VISUAL_USER: ${{ secrets.VISUAL_USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # Step 8 — Upload the HTML report as a downloadable artifact
-      # `if: !cancelled()` ensures the report uploads even when tests fail,
-      # so you can always inspect results after a failed run
-      # Report is retained for 30 days before GitHub auto-deletes it
-      - uses: actions/upload-artifact@v4
+      # Step 8 — Copy Playwright HTML report into docs/report/
+      # Runs even if tests fail so the report is always available on Pages
+      # Report lives at: https://mahadevmg.github.io/Shopflo-Assignment/report/
+      - name: Copy Playwright report into docs
         if: ${{ !cancelled() }}
+        run: |
+          mkdir -p docs/report
+          cp -r playwright-report/. docs/report/
+
+      # Step 9 — Configure GitHub Pages
+      - name: Setup Pages
+        if: ${{ !cancelled() }}
+        uses: actions/configure-pages@v4
+
+      # Step 10 — Upload docs/ (site + report) as a Pages artifact
+      # This bundles the Jekyll docs site and the Playwright report together
+      - name: Upload Pages artifact
+        if: ${{ !cancelled() }}
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          path: docs/
+
+  # Separate deploy job — Pages requires its own job with specific permissions
+  deploy:
+    needs: test
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}   # printed in Actions UI after deploy
+    steps:
+      # Deploys the artifact uploaded in the test job to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

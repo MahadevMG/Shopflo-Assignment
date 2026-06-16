@@ -4,7 +4,7 @@
 
 End-to-end test automation framework built for [Swag Labs](https://www.saucedemo.com) as a Shopflo assignment. This page documents the thinking behind every decision — from framework choice to session handling to CI pipeline design.
 
-[View on GitHub](https://github.com/MahadevMG/Shopflo-Assignment) · [Test Coverage](#test-coverage) · [Future Plans](#future-plans)
+[View on GitHub](https://github.com/MahadevMG/Shopflo-Assignment) · [Test Report](./report/) · [Test Coverage](#test-coverage) · [Future Plans](#future-plans)
 
 ---
 
