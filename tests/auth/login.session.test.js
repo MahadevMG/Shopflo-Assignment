@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { InventoryPage } from '../../pages/inventory.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 import { ENV } from '../../utils/env.js';
 
-const { smoke, regression, P1 } = testdata.tags;
+const { smoke, regression, P1 } = tags;
 
 test.describe("Session", () => {
     test.describe.configure({ mode: 'serial' });
@@ -28,9 +29,16 @@ test.describe("Session", () => {
         await expect(loginPage.loginButton).toBeVisible();
     });
 
-    test("[TC_AUTH_18] back button after logout does not restore session", { tag: [regression, P1] }, async ({ page }) => {
+    test("[TC_AUTH_18] back button after logout does not restore session and localStorage is cleared", { tag: [regression, P1] }, async ({ page }) => {
         await loginPage.login(ENV.standard_user, ENV.password);
         await inventoryPage.logout();
+
+        const localStorageKeys = await page.evaluate(() => Object.keys(window.localStorage));
+        // Filter out third-party analytics keys injected by Backtrace.io (backtrace-guid, backtrace-last-active).
+        // These persist across sessions and are not saucedemo session/cart data.
+        const appKeys = localStorageKeys.filter(k => !k.startsWith('backtrace-'));
+        expect(appKeys).toHaveLength(0);
+
         await page.goBack();
 
         await expect(page).toHaveURL('/');

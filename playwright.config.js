@@ -20,7 +20,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Limit workers to control memory: 2 on CI, 4 locally */
-  workers: process.env.CI ? 2 : 4,
+  workers: process.env.CI ? 2 : 2,
   /* CI: github (inline PR annotations) + list (live logs) + html — Local: html only */
   reporter: process.env.CI ? [['github'], ['list'], ['html']] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -36,7 +36,7 @@ export default defineConfig({
   projects: [
     /* Setup project — runs auth.setup.js once, saves login session to playwright/.auth/
        Feature tests (inventory, cart etc.) depend on this to skip login UI entirely */
-    { name: 'setup', testMatch: /.*\.setup\.js/ },
+    { name: 'setup', testMatch: /.*\.setup\.mjs/ },
 
     {
       name: 'chromium',
@@ -106,7 +106,7 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         video: 'on-first-retry',
         headless: true,
-        storageState: 'playwright/.auth/user.json',
+        /* storageState is set per describe block in each test file via test.use() */
       },
       dependencies: ['setup'],
     },
@@ -120,7 +120,7 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         video: 'on-first-retry',
         headless: true,
-        storageState: 'playwright/.auth/user.json',
+        /* storageState is set per describe block in each test file via test.use() */
       },
       dependencies: ['setup'],
     },

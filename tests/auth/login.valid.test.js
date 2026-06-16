@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { InventoryPage } from '../../pages/inventory.page';
 import testdata from '../../testdata/login.json';
+import tags from '../../testdata/tags.json';
 import { ENV } from '../../utils/env.js';
 
-const { smoke, regression, P1, P2, P3 } = testdata.tags;
+const { smoke, regression, P1, P2, P3 } = tags;
 
 test.describe("Valid Login", () => {
     test.describe.configure({ mode: 'parallel' });
@@ -27,6 +28,7 @@ test.describe("Valid Login", () => {
         await expect(page).toHaveTitle(testdata.expected_texts.swag_labs_title);
         await expect(inventoryPage.shoppingCartIcon).toBeVisible();
         await expect(inventoryPage.inventoryList).toBeVisible();
+        await expect(inventoryPage.inventoryItems).toHaveCount(6);
     });
 
     test("[TC_AUTH_12] performance_glitch_user logs in successfully", { tag: [regression, P2] }, async ({ page }) => {
@@ -54,6 +56,17 @@ test.describe("Valid Login", () => {
         await expect(page).toHaveTitle(testdata.expected_texts.swag_labs_title);
         await expect(inventoryPage.shoppingCartIcon).toBeVisible();
         await expect(inventoryPage.inventoryList).toBeVisible();
+    });
+
+    test("[TC_AUTH_11] problem_user logs in — inventory loads with visual defects", { tag: [regression, P2] }, async ({ page }) => {
+        // Visual defects (broken images, misaligned elements) require visual regression tooling.
+        // This test only verifies successful navigation; screenshot on failure captures the defect state.
+        await loginPage.login(ENV.problem_user, ENV.password);
+
+        await expect(page).toHaveURL(/inventory/);
+        await expect(page).toHaveTitle(testdata.expected_texts.swag_labs_title);
+        await expect(inventoryPage.shoppingCartIcon).toBeVisible();
+        await expect(inventoryPage.inventoryItems).toHaveCount(6);
     });
 
 });
