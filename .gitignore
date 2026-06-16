@@ -10,3 +10,4 @@ node_modules/
 /playwright/.auth/
 .auth/
 .package-lock.json
+/docs/report/
