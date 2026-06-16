@@ -1,0 +1,37 @@
+{
+  "name": "shopflo-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+
+    "test:auth": "playwright test --project=chromium --project=firefox",
+    "test:auth:chrome": "playwright test --project=chromium",
+    "test:auth:firefox": "playwright test --project=firefox",
+
+    "test:features": "playwright test --project=chromium-authenticated --project=firefox-authenticated",
+    "test:features:chrome": "playwright test --project=chromium-authenticated",
+    "test:features:firefox": "playwright test --project=firefox-authenticated",
+
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahadevMG/Shopflo-Assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MahadevMG/Shopflo-Assignment/issues"
+  },
+  "homepage": "https://github.com/MahadevMG/Shopflo-Assignment#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^25.9.3",
+    "dotenv": "^17.4.2"
+  }
+}

@@ -1,0 +1,56 @@
+{
+    "expected_texts": {
+        "swag_labs_title": "Swag Labs"
+    },
+    "tags": {
+        "smoke": "@smoke",
+        "regression": "@regression",
+        "login": "@login",
+        "P1": "@P1",
+        "P2": "@P2",
+        "P3": "@P3"
+    },
+    "invalid_users": {
+        "TC_AUTH_02": {
+            "user": "",
+            "password": "",
+            "expected_error": "Epic sadface: Username is required"
+        },
+        "TC_AUTH_03": {
+            "user": "standard_user",
+            "password": "",
+            "expected_error": "Epic sadface: Password is required"
+        },
+        "TC_AUTH_04": {
+            "user": "",
+            "password": "secret_sauce",
+            "expected_error": "Epic sadface: Username is required"
+        },
+        "TC_AUTH_05": {
+            "user": "wrong_username",
+            "password": "secret_sauce",
+            "expected_error": "Epic sadface: Username and password do not match any user in this service"
+        },
+        "TC_AUTH_06": {
+            "user": "standard_user",
+            "password": "wrong_pass",
+            "expected_error": "Epic sadface: Username and password do not match any user in this service"
+        }
+    },
+    "error_banner": {
+        "TC_AUTH_07": {
+            "expected_error": "Epic sadface: Sorry, this user has been locked out."
+        }
+    },
+    "password_masking": {
+        "TC_AUTH_15": {
+            "expected_type": "password"
+        }
+    },
+    "session": {
+        "TC_AUTH_20": {
+            "url": "/inventory.html",
+            "expected_error": "Epic sadface: You can only access '/inventory.html' when you are logged in."
+        }
+    }
+}
