@@ -96,11 +96,13 @@ jobs:
           destination: ./_site
 
       # Step 10 - Copy Playwright report directly into _site/ AFTER Jekyll builds
-      # Bypasses Jekyll so binary data/*.zip files (screenshots) are not stripped or modified
+      # Jekyll runs as root in Docker so _site/ is root-owned — fix ownership first,
+      # then copy so binary data/*.zip files (screenshots) bypass Jekyll entirely
       # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
       - name: Copy Playwright report into built site
         if: ${{ !cancelled() }}
         run: |
+          sudo chown -R $USER:$USER _site
           mkdir -p _site/report
           cp -r playwright-report/. _site/report/
 
