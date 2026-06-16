@@ -1,27 +1,83 @@
+# Workflow name — shown in the GitHub Actions tab
 name: Playwright Tests
+
+# Triggers — when this workflow runs
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master ]   # runs on every push to main/master
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master ]   # runs on every PR targeting main/master
+
 jobs:
   test:
+    # Cancel the job if it runs longer than 60 minutes (prevents hung runners)
     timeout-minutes: 60
+
+    # The type of machine to run on — ubuntu-latest is the standard CI runner
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      # Step 1 — Check out the repository code onto the runner
+      - uses: actions/checkout@v4
+
+      # Step 2 — Set up Node.js using the latest LTS version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # Step 3 — Cache node_modules
+      # Cache key is a hash of package-lock.json — any dependency change
+      # produces a different hash, invalidating the cache and triggering a fresh install
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-${{ hashFiles('package-lock.json') }}
+
+      # Step 4 — Install npm dependencies (only on cache miss)
+      # Skipped entirely if node_modules cache is still valid
+      - name: Install dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # Step 5 — Cache Playwright browsers
+      # Same cache key strategy — invalidated only when package-lock.json changes
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      # Step 6 — Install Playwright browsers (only on cache miss)
+      # --with-deps also installs OS-level dependencies required by the browsers
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      # Step 7 — Run all Playwright tests
+      # Secrets are stored in GitHub → Settings → Secrets and Variables → Actions
+      # They are injected here as environment variables — same names as .env locally
+      # dotenv in playwright.config.js reads process.env, so this works transparently
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          STANDARD_USER: ${{ secrets.STANDARD_USER }}
+          LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
+          PROBLEM_USER: ${{ secrets.PROBLEM_USER }}
+          PERFORMANCE_GLITCH_USER: ${{ secrets.PERFORMANCE_GLITCH_USER }}
+          ERROR_USER: ${{ secrets.ERROR_USER }}
+          VISUAL_USER: ${{ secrets.VISUAL_USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+
+      # Step 8 — Upload the HTML report as a downloadable artifact
+      # `if: !cancelled()` ensures the report uploads even when tests fail,
+      # so you can always inspect results after a failed run
+      # Report is retained for 30 days before GitHub auto-deletes it
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
