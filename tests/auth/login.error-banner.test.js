@@ -25,4 +25,22 @@ test.describe("Error Banner", () => {
         await expect(loginPage.errorMessage).not.toBeVisible();
     });
 
+    test("[TC_AUTH_09] inline field X icons clear input content", { tag: [regression, P1] }, async () => {
+        // KNOWN FAILURE: Spec says clicking the SVG X icons inside input fields clears their content.
+        // The icons are decorative — clicking them does not clear the field value.
+        // This test documents the spec vs app discrepancy; remove test.fail() if the app is fixed.
+        test.fail();
+
+        await loginPage.login(ENV.locked_out_user, ENV.password);
+
+        await expect(loginPage.usernameErrorIcon).toBeVisible();
+        await expect(loginPage.passwordErrorIcon).toBeVisible();
+
+        await loginPage.usernameErrorIcon.click();
+        await expect(loginPage.usernameInput).toHaveValue('');
+
+        await loginPage.passwordErrorIcon.click();
+        await expect(loginPage.passwordInput).toHaveValue('');
+    });
+
 });
