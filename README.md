@@ -1,4 +1,4 @@
-# Shopflo Assignment — Playwright Test Framework
+# Shopflo Assignment - Playwright Test Framework
 
 ![Playwright](https://img.shields.io/badge/Playwright-1.61-45ba4b?logo=playwright&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-22.x-339933?logo=nodedotjs&logoColor=white)
@@ -41,7 +41,7 @@ End-to-end test automation for [Swag Labs](https://www.saucedemo.com) built with
 ├── testdata/            # Non-sensitive test data (JSON)
 ├── utils/               # Shared utilities (ENV, auth setup)
 ├── playwright.config.js # Playwright configuration
-├── .env                 # Credentials — never commit (gitignored)
+├── .env                 # Credentials - never commit (gitignored)
 └── Framework.md         # Detailed framework documentation
 ```
 
@@ -93,7 +93,7 @@ VISUAL_USER=visual_user
 PASSWORD=secret_sauce
 ```
 
-> Credentials are kept out of source control. See [Framework.md — Environment Variables](./Framework.md#environment-variables) for details.
+> Credentials are kept out of source control. See [Framework.md - Environment Variables](./Framework.md#environment-variables) for details.
 
 ---
 
@@ -121,7 +121,7 @@ npm run test:features:chrome   # Feature tests on Chrome only
 npm run test:features:firefox  # Feature tests on Firefox only
 ```
 
-> Feature tests depend on the `setup` project which logs in once and saves the session. This runs automatically — no manual step needed.
+> Feature tests depend on the `setup` project which logs in once and saves the session. This runs automatically - no manual step needed.
 
 ### Run by tag
 
@@ -158,7 +158,7 @@ npx playwright test --headed    # force headed (visible browser)
 npx playwright test --debug
 ```
 
-> For tag strategy and all available scripts see [Framework.md — Tagging Strategy](./Framework.md#tagging-strategy)
+> For tag strategy and all available scripts see [Framework.md - Tagging Strategy](./Framework.md#tagging-strategy)
 
 ---
 
@@ -200,11 +200,11 @@ To view: `GitHub → Actions → latest workflow run → Artifacts → playwrigh
 
 | File | Test Cases | Mode |
 |---|---|---|
-| `login.valid.test.js` | TC_AUTH_01, 12, 13, 14 — successful logins for all user types | Parallel |
-| `login.invalid.test.js` | TC_AUTH_02–06 — empty fields, wrong credentials | Parallel |
-| `login.error-banner.test.js` | TC_AUTH_07 — locked out user, banner dismiss | — |
-| `login.session.test.js` | TC_AUTH_17, 18, 20 — logout, back button, direct URL | Serial |
-| `login.ui.test.js` | TC_AUTH_15 — password field masking | — |
+| `login.valid.test.js` | TC_AUTH_01, 12, 13, 14 - successful logins for all user types | Parallel |
+| `login.invalid.test.js` | TC_AUTH_02–06 - empty fields, wrong credentials | Parallel |
+| `login.error-banner.test.js` | TC_AUTH_07 - locked out user, banner dismiss | - |
+| `login.session.test.js` | TC_AUTH_17, 18, 20 - logout, back button, direct URL | Serial |
+| `login.ui.test.js` | TC_AUTH_15 - password field masking | - |
 
 | Tag | Tests |
 |---|---|
@@ -233,4 +233,4 @@ Tests run automatically on every push and pull request via GitHub Actions.
 Push / PR → Install deps → Install browsers → Run tests → Upload report
 ```
 
-To add credentials on CI: `Repository → Settings → Secrets → Actions` — add each `.env` variable as a repository secret.
+To add credentials on CI: `Repository → Settings → Secrets → Actions` - add each `.env` variable as a repository secret.

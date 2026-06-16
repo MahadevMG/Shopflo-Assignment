@@ -21,7 +21,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   /* Limit workers to control memory: 2 on CI, 4 locally */
   workers: process.env.CI ? 2 : 2,
-  /* CI: github (inline PR annotations) + list (live logs) + html — Local: html only */
+  /* CI: github (inline PR annotations) + list (live logs) + html - Local: html only */
   reporter: process.env.CI ? [['github'], ['list'], ['html']] : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -34,13 +34,13 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    /* Setup project — runs auth.setup.js once, saves login session to playwright/.auth/
+    /* Setup project - runs auth.setup.js once, saves login session to playwright/.auth/
        Feature tests (inventory, cart etc.) depend on this to skip login UI entirely */
     { name: 'setup', testMatch: /.*\.setup\.mjs/ },
 
     {
       name: 'chromium',
-      /* Blocked from feature folders — only non-auth tests run here (no storageState) */
+      /* Blocked from feature folders - only non-auth tests run here (no storageState) */
       testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
       use: {
         ...devices['Desktop Chrome'],
@@ -56,7 +56,7 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      /* Blocked from feature folders — same reason as chromium above */
+      /* Blocked from feature folders - same reason as chromium above */
       testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
       use: {
         ...devices['Desktop Firefox'],
@@ -96,7 +96,7 @@ export default defineConfig({
     // },
 
     /* Authenticated projects for feature tests (inventory, cart, checkout etc.)
-       Reuse saved login session from setup — skips login UI entirely. */
+       Reuse saved login session from setup - skips login UI entirely. */
     {
       name: 'chromium-authenticated',
       testMatch: ['**/inventory/**', '**/cart/**', '**/checkout/**'],

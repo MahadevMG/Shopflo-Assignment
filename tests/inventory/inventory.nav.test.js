@@ -8,7 +8,7 @@ const { regression, P1, P2, P3 } = tags;
 const { backpack, bike_light } = testdata.test_products;
 const AUTH = (/** @type {string} */ user) => `playwright/.auth/${user}.json`;
 
-test.describe('standard_user — navigation', () => {
+test.describe('standard_user - navigation', () => {
     test.use({ storageState: AUTH(ENV.standard_user) });
 
     let inventoryPage;
@@ -51,10 +51,10 @@ test.describe('standard_user — navigation', () => {
         await inventoryPage.openMenu();
         await inventoryPage.resetAppStateLink.click();
 
-        // Badge gone and URL unchanged — still on inventory, not redirected or logged out
+        // Badge gone and URL unchanged - still on inventory, not redirected or logged out
         await expect(inventoryPage.cartBadge).not.toBeVisible();
         await expect(page).toHaveURL(new RegExp(testdata.navigation.inventory_url));
-        // saucedemo doesn't reactively update button text after reset — reload to confirm full state reset
+        // saucedemo doesn't reactively update button text after reset - reload to confirm full state reset
         await page.reload();
         await expect(inventoryPage.inventoryItems.filter({ hasText: backpack }).locator(inventoryPage.addToCartButton)).toBeVisible();
     });

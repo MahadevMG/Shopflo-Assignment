@@ -9,7 +9,7 @@ const { backpack, bike_light, bolt_tshirt } = testdata.test_products;
 const AUTH = (/** @type {string} */ user) => `playwright/.auth/${user}.json`;
 
 /**standard_user */
-test.describe('standard_user — cart interactions', () => {
+test.describe('standard_user - cart interactions', () => {
     test.describe.configure({ mode: 'serial' });
     test.use({ storageState: AUTH(ENV.standard_user) });
 
@@ -46,8 +46,8 @@ test.describe('standard_user — cart interactions', () => {
     });
 });
 
-/** visual_user — Add to cart works correctly */
-test.describe('visual_user — cart interactions (add to cart works despite visual bugs)', () => {
+/** visual_user - Add to cart works correctly */
+test.describe('visual_user - cart interactions (add to cart works despite visual bugs)', () => {
     test.use({ storageState: AUTH(ENV.visual_user) });
 
     test('[TC_INV_28] Add to cart button flips to Remove and badge shows 1', { tag: [P1, regression] }, async ({ page }) => {
@@ -59,8 +59,8 @@ test.describe('visual_user — cart interactions (add to cart works despite visu
     });
 });
 
-/**  error_user — Add to cart fails silently (known bug) */
-test.describe('error_user — cart interactions (known silent failure bug)', () => {
+/**  error_user - Add to cart fails silently (known bug) */
+test.describe('error_user - cart interactions (known silent failure bug)', () => {
     test.use({ storageState: AUTH(ENV.error_user) });
 
     let inventoryPage;
@@ -70,7 +70,7 @@ test.describe('error_user — cart interactions (known silent failure bug)', () 
     });
 
     test('[TC_INV_27] Add to cart button does not flip to Remove for error_user', { tag: [P1, regression] }, async () => {
-        // Bug: Add to cart action fails silently — button stays as "Add to cart", badge never appears
+        // Bug: Add to cart action fails silently - button stays as "Add to cart", badge never appears
         await inventoryPage.addToCartByName(bolt_tshirt);
         await expect(inventoryPage.inventoryItems.filter({ hasText: bolt_tshirt }).locator(inventoryPage.removeFromCartButton)).toBeVisible();
         await expect(inventoryPage.cartBadge).toBeVisible();

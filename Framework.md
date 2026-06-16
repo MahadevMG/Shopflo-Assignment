@@ -25,32 +25,32 @@
 Shopflo-Assignment/
 │
 ├── pages/                               # Page Object Model classes
-│   ├── login.page.js                    # Login page — locators + actions
-│   └── inventory.page.js                # Inventory page — locators + actions
+│   ├── login.page.js                    # Login page - locators + actions
+│   └── inventory.page.js                # Inventory page - locators + actions
 │
 ├── tests/                               # All test files organised by feature
 │   └── auth/
-│       ├── login.valid.test.js          # TC_AUTH_01, 12, 13, 14 — successful logins
-│       ├── login.invalid.test.js        # TC_AUTH_02–06 — validation error messages
-│       ├── login.error-banner.test.js   # TC_AUTH_07 — locked out user + banner dismiss
-│       ├── login.session.test.js        # TC_AUTH_17, 18, 20 — logout and session handling
-│       └── login.ui.test.js             # TC_AUTH_15 — password field masking
+│       ├── login.valid.test.js          # TC_AUTH_01, 12, 13, 14 - successful logins
+│       ├── login.invalid.test.js        # TC_AUTH_02–06 - validation error messages
+│       ├── login.error-banner.test.js   # TC_AUTH_07 - locked out user + banner dismiss
+│       ├── login.session.test.js        # TC_AUTH_17, 18, 20 - logout and session handling
+│       └── login.ui.test.js             # TC_AUTH_15 - password field masking
 │
 ├── testdata/                            # Non-sensitive test data only
 │   └── login.json                       # Error messages, expected texts, invalid credentials, tags
 │
 ├── utils/                               # Shared utilities used across tests
-│   ├── env.js                           # Centralised ENV object — wraps all process.env calls
+│   ├── env.js                           # Centralised ENV object - wraps all process.env calls
 │   └── auth.setup.js                    # Logs in once and saves session for feature tests
 │
 ├── playwright/.auth/                    # Auto-generated browser session files (gitignored)
-│   └── user.json                        # Created by auth.setup.js — contains cookies/localStorage
+│   └── user.json                        # Created by auth.setup.js - contains cookies/localStorage
 │
 ├── .github/
 │   └── workflows/
 │       └── playwright.yml               # GitHub Actions CI pipeline
 │
-├── .env                                 # Real credentials — never commit (gitignored)
+├── .env                                 # Real credentials - never commit (gitignored)
 ├── .gitignore                           # Excludes .env, node_modules, playwright/.auth etc.
 ├── playwright.config.js                 # All Playwright configuration
 ├── package.json                         # NPM scripts and dependencies
@@ -58,7 +58,7 @@ Shopflo-Assignment/
 ```
 
 **Why one file per concern under `tests/auth/`?**
-A single file with 14 tests all running in parallel can exhaust memory. Splitting by concern means each file runs as its own worker — better isolation, faster failure feedback, and easier to debug when one suite fails.
+A single file with 14 tests all running in parallel can exhaust memory. Splitting by concern means each file runs as its own worker - better isolation, faster failure feedback, and easier to debug when one suite fails.
 
 ---
 
@@ -68,14 +68,14 @@ Defined in `package.json`. Always use these instead of running `npx playwright t
 
 | Script | Command | When to use |
 |---|---|---|
-| `npm test` | `playwright test` | Full suite — all projects |
+| `npm test` | `playwright test` | Full suite - all projects |
 | `npm run test:auth` | `playwright test --project=chromium --project=firefox` | Auth tests on both browsers |
 | `npm run test:auth:chrome` | `playwright test --project=chromium` | Auth tests on Chromium only |
 | `npm run test:auth:firefox` | `playwright test --project=firefox` | Auth tests on Firefox only |
 | `npm run test:features` | `playwright test --project=chromium-authenticated --project=firefox-authenticated` | Feature tests on both browsers (runs setup first) |
 | `npm run test:features:chrome` | `playwright test --project=chromium-authenticated` | Feature tests on Chromium only |
 | `npm run test:features:firefox` | `playwright test --project=firefox-authenticated` | Feature tests on Firefox only |
-| `npm run test:smoke` | `playwright test --grep @smoke` | Quick confidence check — P1 smoke cases |
+| `npm run test:smoke` | `playwright test --grep @smoke` | Quick confidence check - P1 smoke cases |
 | `npm run test:regression` | `playwright test --grep @regression` | Full regression suite |
 | `npm run test:report` | `playwright show-report` | Opens last HTML report in browser |
 
@@ -90,7 +90,7 @@ npx playwright test --grep "TC_AUTH_01"
 # Run in headed mode to watch the browser
 npx playwright test --headed
 
-# Run in debug mode — pauses at each step
+# Run in debug mode - pauses at each step
 npx playwright test --debug
 ```
 
@@ -119,7 +119,7 @@ export default defineConfig({
 ```
 
 **Why `trace: 'on-first-retry'` and not `trace: 'on'`?**
-Recording traces for every test creates large files and slows down the run. Capturing only on retry means you get a trace exactly when a test starts failing — which is when you need it.
+Recording traces for every test creates large files and slows down the run. Capturing only on retry means you get a trace exactly when a test starts failing - which is when you need it.
 
 **Why `workers: process.env.CI ? 2 : 4` and not unlimited?**
 Without a cap, Playwright can spin up as many workers as CPU cores. On CI (typically 2 cores) this causes memory exhaustion. Locally 4 workers gives a good speed/memory balance.
@@ -128,10 +128,10 @@ Without a cap, Playwright can spin up as many workers as CPU cores. On CI (typic
 
 ## Page Object Model
 
-Every page of the application has a corresponding class in `pages/`. Locators and actions live in the class — test files never contain raw selectors.
+Every page of the application has a corresponding class in `pages/`. Locators and actions live in the class - test files never contain raw selectors.
 
 **Why POM?**
-When a selector changes (e.g. a `data-test` attribute is renamed), you fix it in one file instead of hunting through every test. Tests also become easier to read — `loginPage.login(user, pass)` is clearer than repeated `fill` and `click` calls.
+When a selector changes (e.g. a `data-test` attribute is renamed), you fix it in one file instead of hunting through every test. Tests also become easier to read - `loginPage.login(user, pass)` is clearer than repeated `fill` and `click` calls.
 
 ### LoginPage (`pages/login.page.js`)
 
@@ -192,7 +192,7 @@ Playwright provides multiple ways to find elements. This framework follows a pri
 | Last | Class selector | `page.locator('.error-button')` | Only when no `data-test` or role exists |
 
 **Why this order?**
-`getByRole` and `getByTestId` are resilient to UI changes — a button labelled "Login" stays "Login" regardless of styling changes. Class names often change with CSS refactoring. `data-test` attributes exist specifically for testing and rarely change.
+`getByRole` and `getByTestId` are resilient to UI changes - a button labelled "Login" stays "Login" regardless of styling changes. Class names often change with CSS refactoring. `data-test` attributes exist specifically for testing and rarely change.
 
 ---
 
@@ -207,7 +207,7 @@ import { InventoryPage } from '../../pages/inventory.page';
 import testdata from '../../testdata/login.json';
 import { ENV } from '../../utils/env.js';
 
-// Destructure tags once — used as { tag: [smoke, P1] } in each test
+// Destructure tags once - used as { tag: [smoke, P1] } in each test
 const { smoke, regression, P1, P2, P3 } = testdata.tags;
 
 test.describe("Valid Login", () => {
@@ -216,7 +216,7 @@ test.describe("Valid Login", () => {
     let loginPage;
     let inventoryPage;
 
-    // Runs before every test — fresh page state guaranteed
+    // Runs before every test - fresh page state guaranteed
     test.beforeEach(async ({ page }) => {
         loginPage = new LoginPage(page);
         inventoryPage = new InventoryPage(page);
@@ -235,7 +235,7 @@ test.describe("Valid Login", () => {
 ```
 
 **Why `beforeEach` instead of `before`?**
-`beforeEach` gives every test a clean starting point — the login page fresh. If tests shared state via `before`, a failure in one test could corrupt state for the next.
+`beforeEach` gives every test a clean starting point - the login page fresh. If tests shared state via `before`, a failure in one test could corrupt state for the next.
 
 **Why `let` for page objects instead of declaring in beforeEach?**
 Declaring `let loginPage` at describe scope and assigning in `beforeEach` means the page object is accessible to every `test()` in the describe block without passing it as a parameter.
@@ -298,10 +298,10 @@ Only non-sensitive data lives here. Credentials are in `.env`.
 
 Arrays require `.find(u => u.id === 'TC_AUTH_02')` to access a specific entry. Objects let you go straight to the data:
 ```js
-// Array — need .find() every time
+// Array - need .find() every time
 const tc = testdata.invalid_users.find(u => u.id === 'TC_AUTH_02');
 
-// Object — direct access, no logic
+// Object - direct access, no logic
 const tc = testdata.invalid_users.TC_AUTH_02;
 ```
 
@@ -319,7 +319,7 @@ const tc = testdata.invalid_users.TC_AUTH_02;
 
 ## Environment Variables
 
-**File:** `.env` (gitignored — never committed)
+**File:** `.env` (gitignored - never committed)
 
 ```
 STANDARD_USER=standard_user
@@ -331,7 +331,7 @@ VISUAL_USER=visual_user
 PASSWORD=secret_sauce
 ```
 
-**File:** `utils/env.js` — single place where `process.env` is read
+**File:** `utils/env.js` - single place where `process.env` is read
 
 ```js
 export const ENV = {
@@ -355,7 +355,7 @@ await loginPage.login(ENV.standard_user, ENV.password);
 **Why `utils/env.js` instead of `process.env` directly in tests?**
 If a variable is renamed in `.env`, you update it in one file. Without this layer, you'd need to find and replace `process.env.STANDARD_USER` across every test file.
 
-**On CI (GitHub Actions):** Environment variables are set as repository secrets and injected at runtime — the `.env` file is never present on CI.
+**On CI (GitHub Actions):** Environment variables are set as repository secrets and injected at runtime - the `.env` file is never present on CI.
 
 ---
 
@@ -368,7 +368,7 @@ Tags are defined once in `login.json` and used across all test files.
 const { smoke, regression, P1, P2, P3 } = testdata.tags;
 // smoke = "@smoke", P1 = "@P1" etc.
 
-// Applied per test — no string literals scattered in test files
+// Applied per test - no string literals scattered in test files
 test("[TC_AUTH_01] ...", { tag: [smoke, P1] }, async ({ page }) => { ... });
 ```
 
@@ -376,10 +376,10 @@ test("[TC_AUTH_01] ...", { tag: [smoke, P1] }, async ({ page }) => { ... });
 
 | Tag | Purpose |
 |---|---|
-| `@smoke` | Critical path tests — run before every deployment |
-| `@regression` | Full regression suite — run on PRs and nightly |
-| `@login` | All login-related tests — useful for targeted runs |
-| `@P1` | Highest priority — must pass before release |
+| `@smoke` | Critical path tests - run before every deployment |
+| `@regression` | Full regression suite - run on PRs and nightly |
+| `@login` | All login-related tests - useful for targeted runs |
+| `@P1` | Highest priority - must pass before release |
 | `@P2` | High priority |
 | `@P3` | Lower priority |
 
@@ -398,18 +398,18 @@ npx playwright test --grep-invert @P3      # exclude P3 tests
 
 ### The problem
 
-Playwright runs tests in parallel by default. Each parallel worker is a separate browser instance. Without limits, a large test suite can spin up dozens of browser instances simultaneously, exhausting memory — especially on CI.
+Playwright runs tests in parallel by default. Each parallel worker is a separate browser instance. Without limits, a large test suite can spin up dozens of browser instances simultaneously, exhausting memory - especially on CI.
 
-### Fix 1 — Cap workers in config
+### Fix 1 - Cap workers in config
 
 ```js
 workers: process.env.CI ? 2 : 4
 ```
 
-- CI gets 2 workers — GitHub Actions runners have limited RAM
-- Locally gets 4 workers — fast feedback without overloading your machine
+- CI gets 2 workers - GitHub Actions runners have limited RAM
+- Locally gets 4 workers - fast feedback without overloading your machine
 
-### Fix 2 — Split tests into focused files
+### Fix 2 - Split tests into focused files
 
 Each file = one worker. Splitting auth tests into 5 files means at most 5 workers for the auth suite, each handling a small number of tests.
 
@@ -421,18 +421,18 @@ login.error-banner.test.js  → worker 4 → 1 test
 login.ui.test.js            → worker 5 → 1 test
 ```
 
-### Fix 3 — Configure parallelism per suite
+### Fix 3 - Configure parallelism per suite
 
 There are two levels of parallelism in this framework:
 
-**Level 1 — File level** (`fullyParallel: true` in config)
-Each file gets its own worker and runs in parallel with other files. This happens automatically — no code needed in test files.
+**Level 1 - File level** (`fullyParallel: true` in config)
+Each file gets its own worker and runs in parallel with other files. This happens automatically - no code needed in test files.
 
-**Level 2 — Describe level** (`test.describe.configure` inside each file)
-Controls how tests run *within* a file — either all at once (parallel) or one after another (serial).
+**Level 2 - Describe level** (`test.describe.configure` inside each file)
+Controls how tests run *within* a file - either all at once (parallel) or one after another (serial).
 
 ```
-File level — always parallel (fullyParallel: true):
+File level - always parallel (fullyParallel: true):
 
 login.valid.test.js        → worker 1 ──┐
 login.invalid.test.js      → worker 2   │  all files run at the same time
@@ -440,13 +440,13 @@ login.session.test.js      → worker 3   │
 login.error-banner.test.js → worker 4   │
 login.ui.test.js           → worker 5 ──┘
 
-Inside login.valid.test.js (mode: 'parallel') — tests also run simultaneously:
+Inside login.valid.test.js (mode: 'parallel') - tests also run simultaneously:
 ├── TC_AUTH_01 → sub-worker A ──┐
 ├── TC_AUTH_12 → sub-worker B   │  all 4 run at the same time
 ├── TC_AUTH_13 → sub-worker C   │
 └── TC_AUTH_14 → sub-worker D ──┘
 
-Inside login.session.test.js (mode: 'serial') — tests run one after another:
+Inside login.session.test.js (mode: 'serial') - tests run one after another:
 ├── TC_AUTH_17 → worker 3 ──→ finishes
 ├── TC_AUTH_18 → worker 3 ──→ finishes  (waits for previous)
 └── TC_AUTH_20 → worker 3 ──→ finishes  (waits for previous)
@@ -455,12 +455,12 @@ Inside login.session.test.js (mode: 'serial') — tests run one after another:
 `workers: 4` in config caps how many of those file-level workers run simultaneously.
 
 ```js
-// Independent tests — run at the same time within the worker
+// Independent tests - run at the same time within the worker
 test.describe("Valid Login", () => {
     test.describe.configure({ mode: 'parallel' });
 });
 
-// State-sensitive tests — run one after another within the worker
+// State-sensitive tests - run one after another within the worker
 test.describe("Session", () => {
     test.describe.configure({ mode: 'serial' });
 });
@@ -475,9 +475,9 @@ Session tests involve logout, browser back button, and direct URL access. Though
 
 ### The problem
 
-Feature tests (inventory, cart, checkout) all need to start logged in. If every test does a full login through the UI, you're making 50+ login requests for a 50-test suite — slow, and it hammers the server.
+Feature tests (inventory, cart, checkout) all need to start logged in. If every test does a full login through the UI, you're making 50+ login requests for a 50-test suite - slow, and it hammers the server.
 
-### The solution — `storageState`
+### The solution - `storageState`
 
 Log in once, save the browser session (cookies + localStorage) to a file. Every feature test loads that file instead of logging in.
 
@@ -496,7 +496,7 @@ setup('authenticate as standard_user', async ({ page }) => {
     await page.getByRole('button', { name: 'Login' }).click();
     await page.waitForURL(/inventory/);
 
-    // Saves cookies + localStorage — feature tests load this instead of logging in
+    // Saves cookies + localStorage - feature tests load this instead of logging in
     await page.context().storageState({ path: authFile });
 });
 ```
@@ -504,7 +504,7 @@ setup('authenticate as standard_user', async ({ page }) => {
 **What `storageState` saves:**
 - Session cookies (what keeps you logged in)
 - `localStorage` and `sessionStorage` values
-- IndexedDB (if needed — e.g. Firebase auth tokens)
+- IndexedDB (if needed - e.g. Firebase auth tokens)
 
 **Feature test project in config (uncomment when ready):**
 ```js
@@ -521,7 +521,7 @@ setup('authenticate as standard_user', async ({ page }) => {
 
 ### Why auth tests do NOT use storageState
 
-Auth tests (`tests/auth/`) are specifically testing the login page — valid logins, invalid credentials, locked out users, session logout. They must start at the login page in a logged-out state. Adding `storageState` would bypass the login page entirely and break these tests.
+Auth tests (`tests/auth/`) are specifically testing the login page - valid logins, invalid credentials, locked out users, session logout. They must start at the login page in a logged-out state. Adding `storageState` would bypass the login page entirely and break these tests.
 
 ### When does setup run?
 
@@ -543,10 +543,10 @@ npm test                      # all projects → setup runs once, all feature pr
 
 ```js
 projects: [
-    // Runs auth.setup.js — only fires when a feature project depends on it
+    // Runs auth.setup.js - only fires when a feature project depends on it
     { name: 'setup', testMatch: /.*\.setup\.js/ },
 
-    // Auth tests — no storageState, no setup dependency
+    // Auth tests - no storageState, no setup dependency
     {
         name: 'chromium',
         use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 }, headless: true, screenshot: 'only-on-failure', video: 'on-first-retry' },
@@ -556,7 +556,7 @@ projects: [
         use: { ...devices['Desktop Firefox'], viewport: { width: 1920, height: 1080 }, headless: true, screenshot: 'only-on-failure', video: 'on-first-retry' },
     },
 
-    // Feature tests — use saved session, only run tests under inventory/cart/checkout
+    // Feature tests - use saved session, only run tests under inventory/cart/checkout
     {
         name: 'chromium-authenticated',
         testMatch: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
@@ -583,7 +583,7 @@ Traces are recorded on first retry. To open a trace:
 npx playwright show-trace test-results/.../trace.zip
 ```
 
-Or open the HTML report — it embeds the trace viewer:
+Or open the HTML report - it embeds the trace viewer:
 ```bash
 npm run test:report
 ```
@@ -597,7 +597,7 @@ npx playwright test --headed
 
 ### Step through a test interactively
 
-Pauses at each action — useful for pinpointing exactly where a test fails:
+Pauses at each action - useful for pinpointing exactly where a test fails:
 ```bash
 npx playwright test --debug
 ```
@@ -649,10 +649,10 @@ jobs:
 ```
 
 **Key CI behaviours (set in `playwright.config.js`):**
-- `workers: 2` — constrained to avoid OOM on GitHub Actions runners
-- `retries: 1` — one retry per failed test to filter out flakiness
-- `forbidOnly: true` — build fails if `test.only` is accidentally committed
-- `headless: true` — no display server available on CI (default for non-configured browsers)
+- `workers: 2` - constrained to avoid OOM on GitHub Actions runners
+- `retries: 1` - one retry per failed test to filter out flakiness
+- `forbidOnly: true` - build fails if `test.only` is accidentally committed
+- `headless: true` - no display server available on CI (default for non-configured browsers)
 
 **Adding secrets to CI:**
 Repository → Settings → Secrets and Variables → Actions → New repository secret
@@ -685,8 +685,8 @@ Add each `.env` variable as a secret (`PASSWORD`, `STANDARD_USER` etc.).
 2. Create `tests/inventory/` folder with focused test files
 3. Add inventory test data to `testdata/inventory.json`
 4. Uncomment `chromium-authenticated` project in `playwright.config.js`
-5. Uncomment `setup` project (they are a pair — both needed)
-6. Tests start already logged in — no login steps needed in inventory tests
+5. Uncomment `setup` project (they are a pair - both needed)
+6. Tests start already logged in - no login steps needed in inventory tests
 
 ### New tag
 

@@ -58,7 +58,7 @@ test.describe("Valid Login", () => {
         await expect(inventoryPage.inventoryList).toBeVisible();
     });
 
-    test("[TC_AUTH_11] problem_user logs in — inventory loads with visual defects", { tag: [regression, P2] }, async ({ page }) => {
+    test("[TC_AUTH_11] problem_user logs in - inventory loads with visual defects", { tag: [regression, P2] }, async ({ page }) => {
         // Visual defects (broken images, misaligned elements) require visual regression tooling.
         // This test only verifies successful navigation; screenshot on failure captures the defect state.
         await loginPage.login(ENV.problem_user, ENV.password);

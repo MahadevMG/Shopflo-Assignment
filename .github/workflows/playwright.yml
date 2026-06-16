@@ -1,7 +1,7 @@
-# Workflow name — shown in the GitHub Actions tab
+# Workflow name - shown in the GitHub Actions tab
 name: Playwright Tests
 
-# Triggers — when this workflow runs
+# Triggers - when this workflow runs
 on:
   push:
     branches: [ main, master ]   # runs on every push to main/master
@@ -24,20 +24,20 @@ jobs:
     # Cancel the job if it runs longer than 60 minutes (prevents hung runners)
     timeout-minutes: 60
 
-    # The type of machine to run on — ubuntu-latest is the standard CI runner
+    # The type of machine to run on - ubuntu-latest is the standard CI runner
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1 — Check out the repository code onto the runner
+      # Step 1 - Check out the repository code onto the runner
       - uses: actions/checkout@v4
 
-      # Step 2 — Set up Node.js using the latest LTS version
+      # Step 2 - Set up Node.js using the latest LTS version
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      # Step 3 — Cache node_modules
-      # Cache key is a hash of package-lock.json — any dependency change
+      # Step 3 - Cache node_modules
+      # Cache key is a hash of package-lock.json - any dependency change
       # produces a different hash, invalidating the cache and triggering a fresh install
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -46,14 +46,14 @@ jobs:
           path: node_modules
           key: node-${{ hashFiles('package-lock.json') }}
 
-      # Step 4 — Install npm dependencies (only on cache miss)
+      # Step 4 - Install npm dependencies (only on cache miss)
       # Skipped entirely if node_modules cache is still valid
       - name: Install dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      # Step 5 — Cache Playwright browsers
-      # Same cache key strategy — invalidated only when package-lock.json changes
+      # Step 5 - Cache Playwright browsers
+      # Same cache key strategy - invalidated only when package-lock.json changes
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
@@ -61,15 +61,15 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ hashFiles('package-lock.json') }}
 
-      # Step 6 — Install Playwright browsers (only on cache miss)
+      # Step 6 - Install Playwright browsers (only on cache miss)
       # --with-deps also installs OS-level dependencies required by the browsers
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      # Step 7 — Run all Playwright tests
+      # Step 7 - Run all Playwright tests
       # Secrets are stored in GitHub → Settings → Secrets and Variables → Actions
-      # They are injected here as environment variables — same names as .env locally
+      # They are injected here as environment variables - same names as .env locally
       # dotenv in playwright.config.js reads process.env, so this works transparently
       - name: Run Playwright tests
         run: npx playwright test
@@ -82,8 +82,8 @@ jobs:
           VISUAL_USER: ${{ secrets.VISUAL_USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # Step 8 — Copy Playwright report into docs/report/ BEFORE Jekyll builds
-      # Jekyll will include it in the build — avoids permission issues with _site/
+      # Step 8 - Copy Playwright report into docs/report/ BEFORE Jekyll builds
+      # Jekyll will include it in the build - avoids permission issues with _site/
       # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
       - name: Copy Playwright report into docs
         if: ${{ !cancelled() }}
@@ -91,12 +91,12 @@ jobs:
           mkdir -p docs/report
           cp -r playwright-report/. docs/report/
 
-      # Step 9 — Configure GitHub Pages
+      # Step 9 - Configure GitHub Pages
       - name: Setup Pages
         if: ${{ !cancelled() }}
         uses: actions/configure-pages@v4
 
-      # Step 10 — Build Jekyll site from docs/ into _site/
+      # Step 10 - Build Jekyll site from docs/ into _site/
       # docs/report/ is included in the build so the report is part of the site
       - name: Build Jekyll site
         if: ${{ !cancelled() }}
@@ -105,14 +105,14 @@ jobs:
           source: ./docs
           destination: ./_site
 
-      # Step 11 — Upload built site (includes report) as a Pages artifact
+      # Step 11 - Upload built site (includes report) as a Pages artifact
       - name: Upload Pages artifact
         if: ${{ !cancelled() }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site/
 
-  # Deploy job — Pages deployment only runs on master push, not PRs
+  # Deploy job - Pages deployment only runs on master push, not PRs
   # PRs cannot deploy to Pages due to GitHub environment protection rules
   deploy:
     needs: test
