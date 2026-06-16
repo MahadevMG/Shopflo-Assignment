@@ -1,0 +1,64 @@
+{
+    "page_labels": {
+        "step_one": "Checkout: Your Information",
+        "step_two": "Checkout: Overview",
+        "complete": "Checkout: Complete!"
+    },
+    "navigation": {
+        "step_one_url": "/checkout-step-one.html",
+        "step_two_url": "/checkout-step-two.html",
+        "complete_url": "/checkout-complete.html",
+        "cart_url": "/cart.html",
+        "inventory_url": "/inventory.html"
+    },
+    "form": {
+        "valid": { "firstName": "John", "lastName": "Doe", "zip": "10001" },
+        "no_first_name": { "firstName": "", "lastName": "Doe", "zip": "10001" },
+        "no_last_name": { "firstName": "John", "lastName": "", "zip": "10001" },
+        "no_zip": { "firstName": "John", "lastName": "Doe", "zip": "" },
+        "special_chars": { "firstName": "<>#@!", "lastName": "%^&*", "zip": "!!!" },
+        "invalid_zip": { "firstName": "John", "lastName": "Doe", "zip": "ABCDE" }
+    },
+    "errors": {
+        "first_name_required": "Error: First Name is required",
+        "last_name_required": "Error: Last Name is required",
+        "postal_code_required": "Error: Postal Code is required"
+    },
+    "step_two": {
+        "payment": "SauceCard #31337",
+        "shipping": "Free Pony Express Delivery!"
+    },
+    "products": {
+        "backpack": "Sauce Labs Backpack",
+        "fleece_jacket": "Sauce Labs Fleece Jacket"
+    },
+    "product_prices": {
+        "backpack": "$29.99",
+        "fleece_jacket": "$49.99"
+    },
+    "pricing": {
+        "backpack_only": {
+            "subtotal": "$29.99",
+            "tax": "$2.40",
+            "total": "$32.39"
+        },
+        "backpack_and_fleece": {
+            "subtotal": "$79.98",
+            "tax": "$6.40",
+            "total": "$86.38"
+        }
+    },
+    "correct_inventory_prices": {
+        "backpack": "$29.99",
+        "fleece_jacket": "$49.99",
+        "bike_light": "$9.99",
+        "bolt_tshirt": "$15.99",
+        "onesie": "$7.99",
+        "test_tshirt": "$15.99"
+    },
+    "complete": {
+        "heading": "Thank you for your order!",
+        "subtext": "Your order has been dispatched, and will arrive just as fast as the pony can get there!"
+    },
+    "bug_prefill_value": "a"
+}
