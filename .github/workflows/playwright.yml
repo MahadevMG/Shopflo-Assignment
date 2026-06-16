@@ -71,7 +71,7 @@ jobs:
           VISUAL_USER: ${{ secrets.VISUAL_USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # Step 6 — Upload the HTML report as a downloadable artifact
+      # Step 8 — Upload the HTML report as a downloadable artifact
       # `if: !cancelled()` ensures the report uploads even when tests fail,
       # so you can always inspect results after a failed run
       # Report is retained for 30 days before GitHub auto-deletes it

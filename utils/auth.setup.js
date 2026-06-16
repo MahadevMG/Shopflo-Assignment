@@ -1,6 +1,10 @@
 import { test as setup } from '@playwright/test';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { ENV } from './env.js';
+
+// __dirname is not available in ESM — derive it from import.meta.url
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Saves authenticated session to this file — reused by feature test projects
 const authFile = path.join(__dirname, '../playwright/.auth/user.json');

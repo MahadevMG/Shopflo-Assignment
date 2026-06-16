@@ -40,7 +40,8 @@ export default defineConfig({
 
     {
       name: 'chromium',
-      /* Auth tests test the login page itself — no storageState or setup dependency needed */
+      /* Blocked from feature folders — only non-auth tests run here (no storageState) */
+      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
       use: {
         ...devices['Desktop Chrome'],
         viewport: {
@@ -49,14 +50,14 @@ export default defineConfig({
         },
         screenshot: 'only-on-failure',
         video: 'on-first-retry',
-        // trace: 'on',
         headless: true,
-
       },
     },
 
     {
       name: 'firefox',
+      /* Blocked from feature folders — same reason as chromium above */
+      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
       use: {
         ...devices['Desktop Firefox'],
         viewport: {
