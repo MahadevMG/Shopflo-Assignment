@@ -82,28 +82,27 @@ jobs:
           VISUAL_USER: ${{ secrets.VISUAL_USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # Step 8 - Copy Playwright report into docs/report/ BEFORE Jekyll builds
-      # Jekyll will include it in the build - avoids permission issues with _site/
-      # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
-      - name: Copy Playwright report into docs
-        if: ${{ !cancelled() }}
-        run: |
-          mkdir -p docs/report
-          cp -r playwright-report/. docs/report/
-
-      # Step 9 - Configure GitHub Pages
+      # Step 8 - Configure GitHub Pages
       - name: Setup Pages
         if: ${{ !cancelled() }}
         uses: actions/configure-pages@v4
 
-      # Step 10 - Build Jekyll site from docs/ into _site/
-      # docs/report/ is included in the build so the report is part of the site
+      # Step 9 - Build Jekyll site from docs/ into _site/
       - name: Build Jekyll site
         if: ${{ !cancelled() }}
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
+
+      # Step 10 - Copy Playwright report directly into _site/ AFTER Jekyll builds
+      # Bypasses Jekyll so binary data/*.zip files (screenshots) are not stripped or modified
+      # Accessible at: https://mahadevmg.github.io/Shopflo-Assignment/report/
+      - name: Copy Playwright report into built site
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p _site/report
+          cp -r playwright-report/. _site/report/
 
       # Step 11 - Upload built site (includes report) as a Pages artifact
       - name: Upload Pages artifact
