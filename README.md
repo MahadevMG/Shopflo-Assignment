@@ -5,7 +5,7 @@
 ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)
 ![License](https://img.shields.io/badge/License-ISC-blue)
 
-End-to-end test automation for [Swag Labs](https://www.saucedemo.com) built with Playwright, following the Page Object Model pattern.
+End-to-end UI automation and REST API test suite for [Swag Labs](https://www.saucedemo.com) (Assignment 1) and [FakeStore API](https://fakestoreapi.com) (Assignment 2), built entirely with Playwright following the Page Object Model pattern.
 
 ---
 
@@ -25,7 +25,7 @@ End-to-end test automation for [Swag Labs](https://www.saucedemo.com) built with
 
 | Tool | Purpose |
 |---|---|
-| [Playwright](https://playwright.dev) | Browser automation and test runner |
+| [Playwright](https://playwright.dev) | Browser automation, test runner, and API client |
 | [Node.js](https://nodejs.org) | Runtime |
 | [dotenv](https://github.com/motdotla/dotenv) | Environment variable management |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline |
@@ -35,17 +35,68 @@ End-to-end test automation for [Swag Labs](https://www.saucedemo.com) built with
 ## Project Structure
 
 ```
-├── pages/               # Page Object Model classes
-├── tests/               # Test files organised by feature
-│   └── auth/            # Authentication test suite
-├── testdata/            # Non-sensitive test data (JSON)
-├── utils/               # Shared utilities (ENV, auth setup)
-├── playwright.config.js # Playwright configuration
-├── .env                 # Credentials - never commit (gitignored)
-└── Framework.md         # Detailed framework documentation
+├── pages/                          # Page Object Model classes (UI)
+│   ├── login.page.js
+│   ├── inventory.page.js
+│   ├── cart.page.js
+│   └── checkout.page.js
+│
+├── api/                            # API layer (Assignment 2)
+│   ├── clients/
+│   │   ├── auth.client.js          # POST /auth/login wrapper
+│   │   └── cart.client.js          # Cart CRUD wrappers
+│   └── schemas/
+│       ├── cart.schema.js          # Schema validation helpers
+│       └── contract.js             # Contract / snapshot assertion engine
+│
+├── tests/                          # All test files organised by feature
+│   ├── auth/                       # Login / session tests (UI)
+│   ├── inventory/                  # Product listing, sorting, cart badge (UI)
+│   ├── cart/                       # Cart add / remove / quantity (UI)
+│   ├── checkout/                   # Checkout flow end-to-end (UI)
+│   ├── api/                        # REST API tests (no browser)
+│   │   ├── auth/
+│   │   │   └── post.auth.test.js   # POST /auth/login
+│   │   └── cart/
+│   │       ├── get.cart.test.js         # GET /carts
+│   │       ├── post.cart.test.js        # POST /carts
+│   │       ├── put.cart.test.js         # PUT /carts/{id}
+│   │       ├── delete.cart.test.js      # DELETE /carts/{id}
+│   │       ├── cart.datadriven.test.js  # Data-driven POST /carts
+│   │       └── cart.contract.test.js    # Contract / snapshot tests
+│   └── utils/
+│       └── auth.setup.mjs          # Per-user session setup
+│
+├── testdata/                       # Non-sensitive test data (JSON)
+│   ├── login.json
+│   ├── inventory.json
+│   ├── tags.json
+│   ├── cart.json
+│   ├── checkout.json
+│   └── api/
+│       ├── auth.json               # FakeStoreAPI credentials and variants
+│       ├── cart.json               # Cart payloads and IDs
+│       └── contracts/
+│           ├── cart-read.contract.json      # Shape snapshot for GET + DELETE
+│           └── cart-mutation.contract.json  # Shape snapshot for POST + PUT
+│
+├── utils/
+│   └── env.js                      # Centralised ENV object
+│
+├── playwright/.auth/               # Auto-generated session files (gitignored)
+│   ├── standard_user.json
+│   ├── visual_user.json
+│   ├── error_user.json
+│   ├── problem_user.json
+│   └── performance_glitch_user.json
+│
+├── playwright.config.js            # Playwright configuration
+├── .env                            # Credentials - never commit (gitignored)
+├── Framework.md                    # Detailed framework documentation
+└── docs/index.md                   # Published GitHub Pages documentation
 ```
 
-> Full structure and architecture explained in [Framework.md](./Framework.md)
+> Full structure, patterns, and rationale explained in [Framework.md](./Framework.md)
 
 ---
 
@@ -79,10 +130,6 @@ npx playwright install
 
 Create a `.env` file in the project root:
 
-```bash
-cp .env.example .env   # if example exists, otherwise create manually
-```
-
 ```ini
 STANDARD_USER=standard_user
 LOCKED_OUT_USER=locked_out_user
@@ -99,66 +146,71 @@ PASSWORD=secret_sauce
 
 ## Running Tests
 
-### Run all tests
+### Run all tests (UI + API)
 
 ```bash
 npm test
 ```
 
-### Run auth tests
+### Run auth tests only (UI, both browsers)
 
 ```bash
-npm run test:auth          # Auth tests on both Chrome and Firefox
-npm run test:auth:chrome   # Auth tests on Chrome only
-npm run test:auth:firefox  # Auth tests on Firefox only
+npm run test:auth            # Chrome + Firefox
+npm run test:auth:chrome
+npm run test:auth:firefox
 ```
 
-### Run feature tests (requires saved session)
+### Run feature UI tests (inventory, cart, checkout)
 
 ```bash
-npm run test:features          # Feature tests on both Chrome and Firefox
-npm run test:features:chrome   # Feature tests on Chrome only
-npm run test:features:firefox  # Feature tests on Firefox only
+npm run test:features            # Chrome + Firefox (runs setup first)
+npm run test:features:chrome
+npm run test:features:firefox
 ```
 
-> Feature tests depend on the `setup` project which logs in once and saves the session. This runs automatically - no manual step needed.
+> Feature tests depend on the `setup` project which logs in once per user and saves sessions. Runs automatically - no manual step needed.
+
+### Run API tests only
+
+```bash
+npx playwright test tests/api/ --project=api
+```
+
+> See [API.md](./API.md) for all API-specific run commands (by suite, by file, by TC ID).
 
 ### Run by tag
 
 ```bash
-npm run test:smoke       # Smoke tests (@smoke tag)
-npm run test:regression  # Full regression suite (@regression tag)
+npm run test:smoke       # @smoke tests
+npm run test:regression  # @regression tests
 ```
 
 ### Run by priority
 
 ```bash
-npx playwright test --grep @P1   # Critical priority tests
-npx playwright test --grep @P2   # High priority tests
+npx playwright test --grep @P1
+npx playwright test --grep @P2
 ```
 
-### Run a specific file or test
+### Run a specific test file or test case
 
 ```bash
-npx playwright test tests/auth/valid-login.test.js
-npx playwright test --grep "TC_AUTH_01"
+npx playwright test tests/checkout/checkout.validation.test.js
+npx playwright test --grep "TC_CHK_04"
+npx playwright test --grep "TC_API_01"
 ```
 
-### Headed mode (watch the browser)
-
-Tests run headless by default. To watch the browser:
+### Headed mode
 
 ```bash
-npx playwright test --headed    # force headed (visible browser)
+npx playwright test --headed
 ```
 
-### Debug a test step by step
+### Debug mode (step-by-step)
 
 ```bash
 npx playwright test --debug
 ```
-
-> For tag strategy and all available scripts see [Framework.md - Tagging Strategy](./Framework.md#tagging-strategy)
 
 ---
 
@@ -166,21 +218,13 @@ npx playwright test --debug
 
 ### HTML Report
 
-After any test run, an HTML report is generated automatically:
-
 ```bash
 npm run test:report
 ```
 
-This opens an interactive report in your browser showing:
-- Pass / fail status per test
-- Screenshots on failure
-- Video recordings on retry
-- Trace viewer for step-by-step replay
+Shows pass/fail per test, screenshots on failure, video on retry, and embedded trace viewer.
 
 ### Trace Viewer
-
-Traces are captured on first retry. To open a trace manually:
 
 ```bash
 npx playwright show-trace test-results/<folder>/trace.zip
@@ -188,31 +232,32 @@ npx playwright show-trace test-results/<folder>/trace.zip
 
 ### CI Reports
 
-On every push and pull request, the GitHub Actions pipeline runs all tests and uploads the HTML report as an artifact retained for **30 days**.
+Every push and PR runs the full suite via GitHub Actions and uploads an HTML report as an artifact retained for 30 days.
 
-To view: `GitHub → Actions → latest workflow run → Artifacts → playwright-report`
+`GitHub → Actions → latest run → Artifacts → playwright-report`
+
+The latest report is also published to GitHub Pages and always reflects the most recent `master` run:
+
+**[https://mahadevmg.github.io/Shopflo-Assignment/report/](https://mahadevmg.github.io/Shopflo-Assignment/report/)**
 
 ---
 
 ## Test Coverage
 
-### Authentication (`tests/auth/`)
+### Assignment 1 - Swag Labs UI (`tests/`)
 
-| File | Test Cases | Mode |
-|---|---|---|
-| `login.valid.test.js` | TC_AUTH_01, 12, 13, 14 - successful logins for all user types | Parallel |
-| `login.invalid.test.js` | TC_AUTH_02–06 - empty fields, wrong credentials | Parallel |
-| `login.error-banner.test.js` | TC_AUTH_07 - locked out user, banner dismiss | - |
-| `login.session.test.js` | TC_AUTH_17, 18, 20 - logout, back button, direct URL | Serial |
-| `login.ui.test.js` | TC_AUTH_15 - password field masking | - |
+| Suite | Files | Test Count | Notes |
+|---|---|---|---|
+| Auth | `tests/auth/` | 14 | Login/logout, session, UI masking |
+| Inventory | `tests/inventory/` | 20+ | Sort, display, cart badge, links, navigation |
+| Cart | `tests/cart/` | 20+ | Add, remove, quantity, persistence |
+| Checkout | `tests/checkout/` | 32 | Validation, navigation, summary, complete, edge, E2E |
 
-| Tag | Tests |
-|---|---|
-| `@smoke` | TC_AUTH_01, TC_AUTH_17 |
-| `@regression` | All others |
-| `@P1` | TC_AUTH_01, 05, 06, 07, 17, 18, 20 |
-| `@P2` | TC_AUTH_02, 12, 13, 15 |
-| `@P3` | TC_AUTH_03, 04, 14 |
+### Assignment 2 - FakeStore API (`tests/api/`)
+
+35 API tests across 7 suites — auth, cart CRUD, data-driven, and contract/snapshot tests.
+
+> Full details: [API.md](./API.md) — clients, schema validation, contract testing, test data, FakeStoreAPI quirks, and all running commands.  
 
 ---
 
@@ -220,8 +265,10 @@ To view: `GitHub → Actions → latest workflow run → Artifacts → playwrigh
 
 | Document | What it covers |
 |---|---|
-| [Framework.md](./Framework.md) | Architecture, POM, locator strategy, parallelism, session handling, CI config, how to add new tests |
-| [DECISIONS.md](./DECISIONS.md) | Framework choice rationale, Selenium vs WebdriverIO vs Playwright comparison, extension plan, future roadmap |
+| [API.md](./API.md) | Full API test suite docs — clients, schema validation, contract testing, test data, FakeStoreAPI quirks |
+| [Framework.md](./Framework.md) | Folder structure, POM, locator strategy, session handling, API client pattern, Playwright config, CI, how to add new tests |
+| [docs/index.md - Decisions](./docs/index.md#decisions) | Why Playwright over Selenium/WebdriverIO, why Playwright was reused for API testing, every major architectural decision with rationale |
+| [docs/index.md](./docs/index.md) | GitHub Pages published documentation - full narrative with challenges and solutions |
 
 ---
 
@@ -230,7 +277,7 @@ To view: `GitHub → Actions → latest workflow run → Artifacts → playwrigh
 Tests run automatically on every push and pull request via GitHub Actions.
 
 ```
-Push / PR → Install deps → Install browsers → Run tests → Upload report
+Push / PR → Restore cache → Install deps → Install browsers → Run all tests → Upload report
 ```
 
-To add credentials on CI: `Repository → Settings → Secrets → Actions` - add each `.env` variable as a repository secret.
+To add credentials on CI: `Repository → Settings → Secrets → Actions` — add each `.env` variable as a repository secret.

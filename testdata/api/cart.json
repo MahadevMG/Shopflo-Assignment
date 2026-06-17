@@ -1,0 +1,38 @@
+{
+    "existing_cart_id": 1,
+    "nonexistent_cart_id": 99999,
+
+    "create": {
+        "userId": 1,
+        "date": "2024-06-17",
+        "products": [
+            { "productId": 1, "quantity": 2 }
+        ]
+    },
+
+    "create_multi_product": {
+        "userId": 2,
+        "date": "2024-06-17",
+        "products": [
+            { "productId": 1, "quantity": 1 },
+            { "productId": 5, "quantity": 3 }
+        ]
+    },
+
+    "update": {
+        "userId": 1,
+        "date": "2024-06-17",
+        "products": [
+            { "productId": 2, "quantity": 5 }
+        ]
+    },
+
+    "datadriven_products": [1, 2, 3],
+
+    "invalid_missing_user": {
+        "date": "2024-06-17",
+        "products": [
+            { "productId": 1, "quantity": 1 }
+        ]
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "_comment": "Snapshot of GET /carts/{id} and DELETE /carts/{id} response shape. Captured 2026-06-17.",
+    "_source": "curl https://fakestoreapi.com/carts/1",
+    "id": "number",
+    "userId": "number",
+    "date": "string",
+    "products": { "productId": "number", "quantity": "number" },
+    "__v": "number"
+}
