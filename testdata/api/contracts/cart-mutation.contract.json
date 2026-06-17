@@ -1,0 +1,8 @@
+{
+    "_comment": "Snapshot of POST /carts and PUT /carts/{id} response shape. No __v — mutation responses echo the payload without the MongoDB version key. Captured 2026-06-17.",
+    "_source": "curl -X POST https://fakestoreapi.com/carts",
+    "id": "number",
+    "userId": "number",
+    "date": "string",
+    "products": { "productId": "number", "quantity": "number" }
+}

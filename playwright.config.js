@@ -41,7 +41,7 @@ export default defineConfig({
     {
       name: 'chromium',
       /* Blocked from feature folders - only non-auth tests run here (no storageState) */
-      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
+      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**', '**/api/**'],
       use: {
         ...devices['Desktop Chrome'],
         viewport: {
@@ -57,7 +57,7 @@ export default defineConfig({
     {
       name: 'firefox',
       /* Blocked from feature folders - same reason as chromium above */
-      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
+      testIgnore: ['**/inventory/**', '**/cart/**', '**/checkout/**', '**/api/**'],
       use: {
         ...devices['Desktop Firefox'],
         viewport: {
@@ -98,8 +98,18 @@ export default defineConfig({
     /* Authenticated projects for feature tests (inventory, cart, checkout etc.)
        Reuse saved login session from setup - skips login UI entirely. */
     {
+      name: 'api',
+      testMatch: ['**/tests/api/**'],
+      use: {
+        baseURL: 'https://fakestoreapi.com',
+        extraHTTPHeaders: { 'Content-Type': 'application/json' },
+      },
+    },
+
+    {
       name: 'chromium-authenticated',
       testMatch: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
+      testIgnore: ['**/api/**'],
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 1080 },
@@ -114,6 +124,7 @@ export default defineConfig({
     {
       name: 'firefox-authenticated',
       testMatch: ['**/inventory/**', '**/cart/**', '**/checkout/**'],
+      testIgnore: ['**/api/**'],
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1920, height: 1080 },
